@@ -14,3 +14,5 @@ ReactDOM.render(
   <div>xxx</div>,
   document.getElementById('app')
 );
+
+require('./redux-example.jsx');
