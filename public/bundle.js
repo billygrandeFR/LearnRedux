@@ -118,6 +118,7 @@
 	), document.getElementById('app'));
 
 	__webpack_require__(246);
+	// require('./redux-example.jsx');
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ },
@@ -26991,9 +26992,41 @@
 
 	'use strict';
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var redux = __webpack_require__(247);
 
-	console.log('starting redux example');
+	console.log('Starting redux example');
+
+	var stateDefault = {
+	  searchText: '',
+	  showCompleted: false,
+	  todos: []
+	};
+
+	var reducer = function reducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : stateDefault;
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'CHANGE_SEARCH_TEXT':
+	      return _extends({}, state, {
+	        searchText: action.searchText
+	      });
+	    default:
+	      return state;
+	  }
+	};
+
+	var store = redux.createStore(reducer);
+
+	console.log('currentState: ', store.getState());
+
+	var searchText = 'Kevin';
+
+	store.dispatch({ type: 'CHANGE_SEARCH_TEXT', searchText: searchText });
+
+	console.log('worked? ', store.getState());
 
 /***/ },
 /* 247 */
