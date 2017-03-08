@@ -20,12 +20,16 @@ var reducer = (state = stateDefault, action) => {
 
 };
 
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
-console.log('currentState: ', store.getState());
+store.subscribe(() => {
+  var state = store.getState();
+  console.log('Search text is: ', state.searchText);
+});
 
-var searchText = 'Kevin';
-
-store.dispatch({type: 'CHANGE_SEARCH_TEXT', searchText: searchText});
-
-console.log('worked? ', store.getState());
+store.dispatch({type: 'CHANGE_SEARCH_TEXT', searchText: 'Kevin'});
+store.dispatch({type: 'CHANGE_SEARCH_TEXT', searchText: 'Damian'});
+store.dispatch({type: 'CHANGE_SEARCH_TEXT', searchText: 'Timothy'});
+store.dispatch({type: 'CHANGE_SEARCH_TEXT', searchText: 'Danni'});
