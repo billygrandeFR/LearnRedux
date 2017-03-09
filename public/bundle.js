@@ -27215,10 +27215,10 @@
 	  id: 1
 	});
 
-	store.dispatch(addHobby('Sex'));
-	store.dispatch(addHobby('Shag'));
+	store.dispatch(addHobby('Nosy'));
+	store.dispatch(addHobby('People'));
 	store.dispatch(removeHobby(4));
-	store.dispatch(addMovie('Brains', 'Appeal'));
+	store.dispatch(addMovie('Get', 'Lost'));
 	store.dispatch(removeMovie(2));
 
 /***/ },
