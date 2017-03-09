@@ -26991,10 +26991,10 @@
 
 	'use strict';
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 	var redux = __webpack_require__(247);
-	var axios = __webpack_require__(268);
+
+	var actions = __webpack_require__(268);
+	var store = __webpack_require__(294).configure();
 
 	console.log('starting redux example');
 
@@ -27003,214 +27003,6 @@
 	  hobbies: [],
 	  movies: []
 	};
-
-	var nextHobbyId = 1;
-	var nextMovieId = 1;
-
-	// var oldReducer = (state = stateDefault, action) => {
-	//   // state = state || {name: 'Anonymous'};
-	//
-	//     switch (action.type) {
-	//       case 'CHANGE_NAME':
-	//       return {
-	//         ...state,
-	//         name: action.name
-	//       };
-	//
-	//       case 'ADD_HOBBY':
-	//       return {
-	//         ...state,
-	//         hobbies: [
-	//           ...state.hobbies,
-	//           {
-	//             id: nextHobbyId++,
-	//             hobby: action.hobby
-	//           }
-	//         ]
-	//       };
-	//
-	//       case 'REMOVE_HOBBY':
-	//       return {
-	//         ...state,
-	//         hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
-	//       };
-	//
-	//       case 'ADD_MOVIE':
-	//       return {
-	//         ...state,
-	//         movies: [
-	//           ...state.movies,
-	//           {
-	//             id: nextMovieId++,
-	//             movie: action.movie,
-	//             genre: action.genre
-	//           }
-	//         ]
-	//       };
-	//
-	//       case 'REMOVE_MOVIE':
-	//       return {
-	//         ...state,
-	//         movies: state.movies.filter((movie) => movie.id !== action.id)
-	//       };
-	//
-	//       default: return state;
-	//     }
-	// };
-	// name reducer and action generators
-	// -----------------------------------------
-
-	var nameReducer = function nameReducer() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Anonymous';
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'CHANGE_NAME':
-	      return action.name;
-
-	    default:
-	      return state;
-	  };
-	};
-
-	var changeName = function changeName(name) {
-	  return {
-	    type: 'CHANGE_NAME',
-	    name: name
-	  };
-	};
-	// hobbies reducer and action generators
-	// --------------------------------------
-
-	var hobbiesReducer = function hobbiesReducer() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'ADD_HOBBY':
-	      return [].concat(_toConsumableArray(state), [{
-	        id: nextHobbyId++,
-	        hobby: action.hobby
-	      }]);
-
-	    case 'REMOVE_HOBBY':
-	      return state.filter(function (hobby) {
-	        return hobby.id !== action.id;
-	      });
-
-	    default:
-	      return state;
-	  }
-	};
-	// action generators
-	var addHobby = function addHobby(hobby) {
-	  return {
-	    type: 'ADD_HOBBY',
-	    hobby: hobby
-	  };
-	};
-	var removeHobby = function removeHobby(id) {
-	  return {
-	    type: 'REMOVE_HOBBY',
-	    id: id
-	  };
-	};
-	// movies reducer and action generators
-	// ----------------------------------------------
-
-	var moviesReducer = function moviesReducer() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'ADD_MOVIE':
-	      return [].concat(_toConsumableArray(state), [{
-	        id: nextMovieId++,
-	        movie: action.movie,
-	        genre: action.genre
-	      }]);
-
-	    case 'REMOVE_MOVIE':
-	      return state.filter(function (movie) {
-	        return movie.id !== action.id;
-	      });
-
-	    default:
-	      return state;
-	  }
-	};
-
-	var addMovie = function addMovie(movie, genre) {
-	  return {
-	    type: 'ADD_MOVIE',
-	    movie: movie,
-	    genre: genre
-	  };
-	};
-	var removeMovie = function removeMovie(id) {
-	  return {
-	    type: 'REMOVE_MOVIE',
-	    id: id
-	  };
-	};
-	// movies reducer and action generators
-	// ----------------------------------------------
-	var mapReducer = function mapReducer() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { isFetching: false, url: undefined };
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'START_LOCATION_FETCH':
-	      return {
-	        isFetching: true,
-	        url: undefined
-	      };
-	    case 'COMPLETE_LOCATION_FETCH':
-	      return {
-	        isFetching: false,
-	        url: action.url
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var startLocationFetch = function startLocationFetch() {
-	  return {
-	    type: 'START_LOCATION_FETCH'
-	  };
-	};
-
-	var completeLocationFetch = function completeLocationFetch(url) {
-	  return {
-	    type: 'COMPLETE_LOCATION_FETCH',
-	    url: url
-	  };
-	};
-
-	var fetchLocation = function fetchLocation() {
-	  store.dispatch(startLocationFetch());
-	  axios.get('http://www.ipinfo.io').then(function (res) {
-	    var loc = res.data.loc;
-	    var baseUrl = 'http://maps.google.com?q=';
-	    store.dispatch(completeLocationFetch(baseUrl + loc));
-	  });
-	};
-	// Combine
-
-	var reducer = redux.combineReducers({
-	  name: nameReducer,
-	  hobbies: hobbiesReducer,
-	  movies: moviesReducer,
-	  map: mapReducer
-
-	});
-
-	var store = redux.createStore(reducer, redux.compose(window.devToolsExtension ? window.devToolsExtension() : function (f) {
-	  return f;
-	}));
-
-	// subscribe to changes
 
 	var unsubscribe = store.subscribe(function () {
 	  var state = store.getState();
@@ -27223,9 +27015,9 @@
 	  }
 	});
 
-	fetchLocation();
+	store.dispatch(actions.fetchLocation());
 
-	store.dispatch(changeName('David'));
+	store.dispatch(actions.changeName('David'));
 
 	store.dispatch({
 	  type: 'ADD_MOVIE',
@@ -27266,11 +27058,11 @@
 	  id: 1
 	});
 
-	store.dispatch(addHobby('Nosy'));
-	store.dispatch(addHobby('People'));
-	store.dispatch(removeHobby(4));
-	store.dispatch(addMovie('Get', 'Lost'));
-	store.dispatch(removeMovie(2));
+	store.dispatch(actions.addHobby('Nosy'));
+	store.dispatch(actions.addHobby('People'));
+	store.dispatch(actions.removeHobby(4));
+	store.dispatch(actions.addMovie('Get', 'Lost'));
+	store.dispatch(actions.removeMovie(2));
 
 /***/ },
 /* 247 */
@@ -28308,18 +28100,89 @@
 /* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(269);
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var axios = __webpack_require__(269);
+
+	var changeName = exports.changeName = function changeName(name) {
+	  return {
+	    type: 'CHANGE_NAME',
+	    name: name
+	  };
+	};
+
+	var addHobby = exports.addHobby = function addHobby(hobby) {
+	  return {
+	    type: 'ADD_HOBBY',
+	    hobby: hobby
+	  };
+	};
+
+	var removeHobby = exports.removeHobby = function removeHobby(id) {
+	  return {
+	    type: 'REMOVE_HOBBY',
+	    id: id
+	  };
+	};
+
+	var addMovie = exports.addMovie = function addMovie(movie, genre) {
+	  return {
+	    type: 'ADD_MOVIE',
+	    movie: movie,
+	    genre: genre
+	  };
+	};
+
+	var removeMovie = exports.removeMovie = function removeMovie(id) {
+	  return {
+	    type: 'REMOVE_MOVIE',
+	    id: id
+	  };
+	};
+
+	var startLocationFetch = exports.startLocationFetch = function startLocationFetch() {
+	  return {
+	    type: 'START_LOCATION_FETCH'
+	  };
+	};
+
+	var completeLocationFetch = exports.completeLocationFetch = function completeLocationFetch(url) {
+	  return {
+	    type: 'COMPLETE_LOCATION_FETCH',
+	    url: url
+	  };
+	};
+
+	var fetchLocation = exports.fetchLocation = function fetchLocation() {
+	  return function (dispatch, getState) {
+	    dispatch(startLocationFetch());
+	    axios.get('http://www.ipinfo.io').then(function (res) {
+	      var loc = res.data.loc;
+	      var baseUrl = 'http://maps.google.com?q=';
+	      dispatch(completeLocationFetch(baseUrl + loc));
+	    });
+	  };
+	};
 
 /***/ },
 /* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(270);
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
-	var utils = __webpack_require__(270);
-	var bind = __webpack_require__(271);
-	var Axios = __webpack_require__(272);
-	var defaults = __webpack_require__(273);
+	var utils = __webpack_require__(271);
+	var bind = __webpack_require__(272);
+	var Axios = __webpack_require__(273);
+	var defaults = __webpack_require__(274);
 
 	/**
 	 * Create an instance of Axios
@@ -28352,15 +28215,15 @@
 	};
 
 	// Expose Cancel & CancelToken
-	axios.Cancel = __webpack_require__(290);
-	axios.CancelToken = __webpack_require__(291);
-	axios.isCancel = __webpack_require__(287);
+	axios.Cancel = __webpack_require__(291);
+	axios.CancelToken = __webpack_require__(292);
+	axios.isCancel = __webpack_require__(288);
 
 	// Expose all/spread
 	axios.all = function all(promises) {
 	  return Promise.all(promises);
 	};
-	axios.spread = __webpack_require__(292);
+	axios.spread = __webpack_require__(293);
 
 	module.exports = axios;
 
@@ -28369,12 +28232,12 @@
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var bind = __webpack_require__(271);
+	var bind = __webpack_require__(272);
 
 	/*global toString:true*/
 
@@ -28674,7 +28537,7 @@
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28691,17 +28554,17 @@
 
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var defaults = __webpack_require__(273);
-	var utils = __webpack_require__(270);
-	var InterceptorManager = __webpack_require__(284);
-	var dispatchRequest = __webpack_require__(285);
-	var isAbsoluteURL = __webpack_require__(288);
-	var combineURLs = __webpack_require__(289);
+	var defaults = __webpack_require__(274);
+	var utils = __webpack_require__(271);
+	var InterceptorManager = __webpack_require__(285);
+	var dispatchRequest = __webpack_require__(286);
+	var isAbsoluteURL = __webpack_require__(289);
+	var combineURLs = __webpack_require__(290);
 
 	/**
 	 * Create a new instance of Axios
@@ -28782,13 +28645,13 @@
 
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(270);
-	var normalizeHeaderName = __webpack_require__(274);
+	var utils = __webpack_require__(271);
+	var normalizeHeaderName = __webpack_require__(275);
 
 	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 	var DEFAULT_CONTENT_TYPE = {
@@ -28805,10 +28668,10 @@
 	  var adapter;
 	  if (typeof XMLHttpRequest !== 'undefined') {
 	    // For browsers use XHR adapter
-	    adapter = __webpack_require__(275);
+	    adapter = __webpack_require__(276);
 	  } else if (typeof process !== 'undefined') {
 	    // For node use HTTP adapter
-	    adapter = __webpack_require__(275);
+	    adapter = __webpack_require__(276);
 	  }
 	  return adapter;
 	}
@@ -28882,12 +28745,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
+	var utils = __webpack_require__(271);
 
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -28900,18 +28763,18 @@
 
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(270);
-	var settle = __webpack_require__(276);
-	var buildURL = __webpack_require__(279);
-	var parseHeaders = __webpack_require__(280);
-	var isURLSameOrigin = __webpack_require__(281);
-	var createError = __webpack_require__(277);
-	var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(282);
+	var utils = __webpack_require__(271);
+	var settle = __webpack_require__(277);
+	var buildURL = __webpack_require__(280);
+	var parseHeaders = __webpack_require__(281);
+	var isURLSameOrigin = __webpack_require__(282);
+	var createError = __webpack_require__(278);
+	var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(283);
 
 	module.exports = function xhrAdapter(config) {
 	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -29007,7 +28870,7 @@
 	    // This is only done if running in a standard browser environment.
 	    // Specifically not if we're in a web worker, or react-native.
 	    if (utils.isStandardBrowserEnv()) {
-	      var cookies = __webpack_require__(283);
+	      var cookies = __webpack_require__(284);
 
 	      // Add xsrf header
 	      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -29084,12 +28947,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createError = __webpack_require__(277);
+	var createError = __webpack_require__(278);
 
 	/**
 	 * Resolve or reject a Promise based on response status.
@@ -29115,12 +28978,12 @@
 
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var enhanceError = __webpack_require__(278);
+	var enhanceError = __webpack_require__(279);
 
 	/**
 	 * Create an Error with the specified message, config, error code, and response.
@@ -29138,7 +29001,7 @@
 
 
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29163,12 +29026,12 @@
 
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
+	var utils = __webpack_require__(271);
 
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -29237,12 +29100,12 @@
 
 
 /***/ },
-/* 280 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
+	var utils = __webpack_require__(271);
 
 	/**
 	 * Parse headers into an object
@@ -29280,12 +29143,12 @@
 
 
 /***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
+	var utils = __webpack_require__(271);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -29354,7 +29217,7 @@
 
 
 /***/ },
-/* 282 */
+/* 283 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29396,12 +29259,12 @@
 
 
 /***/ },
-/* 283 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
+	var utils = __webpack_require__(271);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -29455,12 +29318,12 @@
 
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
+	var utils = __webpack_require__(271);
 
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -29513,15 +29376,15 @@
 
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
-	var transformData = __webpack_require__(286);
-	var isCancel = __webpack_require__(287);
-	var defaults = __webpack_require__(273);
+	var utils = __webpack_require__(271);
+	var transformData = __webpack_require__(287);
+	var isCancel = __webpack_require__(288);
+	var defaults = __webpack_require__(274);
 
 	/**
 	 * Throws a `Cancel` if cancellation has been requested.
@@ -29598,12 +29461,12 @@
 
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(270);
+	var utils = __webpack_require__(271);
 
 	/**
 	 * Transform the data for a request or a response
@@ -29624,7 +29487,7 @@
 
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29635,7 +29498,7 @@
 
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29655,7 +29518,7 @@
 
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29673,7 +29536,7 @@
 
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29698,12 +29561,12 @@
 
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Cancel = __webpack_require__(290);
+	var Cancel = __webpack_require__(291);
 
 	/**
 	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -29761,7 +29624,7 @@
 
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29792,6 +29655,154 @@
 	  };
 	};
 
+
+/***/ },
+/* 294 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var redux = __webpack_require__(247);
+	var thunk = __webpack_require__(295).default;
+
+	var _require = __webpack_require__(296),
+	    nameReducer = _require.nameReducer,
+	    hobbiesReducer = _require.hobbiesReducer,
+	    moviesReducer = _require.moviesReducer,
+	    mapReducer = _require.mapReducer;
+
+	var configure = exports.configure = function configure() {
+
+	  var reducer = redux.combineReducers({
+	    name: nameReducer,
+	    hobbies: hobbiesReducer,
+	    movies: moviesReducer,
+	    map: mapReducer
+
+	  });
+
+	  var store = redux.createStore(reducer, redux.compose(redux.applyMiddleware(thunk), window.devToolsExtension ? window.devToolsExtension() : function (f) {
+	    return f;
+	  }));
+
+	  return store;
+	};
+
+/***/ },
+/* 295 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = thunkMiddleware;
+	function thunkMiddleware(_ref) {
+	  var dispatch = _ref.dispatch;
+	  var getState = _ref.getState;
+
+	  return function (next) {
+	    return function (action) {
+	      if (typeof action === 'function') {
+	        return action(dispatch, getState);
+	      }
+
+	      return next(action);
+	    };
+	  };
+	}
+
+/***/ },
+/* 296 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	var nameReducer = exports.nameReducer = function nameReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Anonymous';
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'CHANGE_NAME':
+	      return action.name;
+
+	    default:
+	      return state;
+	  };
+	};
+
+	var nextHobbyId = 1;
+	var hobbiesReducer = exports.hobbiesReducer = function hobbiesReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'ADD_HOBBY':
+	      return [].concat(_toConsumableArray(state), [{
+	        id: nextHobbyId++,
+	        hobby: action.hobby
+	      }]);
+
+	    case 'REMOVE_HOBBY':
+	      return state.filter(function (hobby) {
+	        return hobby.id !== action.id;
+	      });
+
+	    default:
+	      return state;
+	  }
+	};
+
+	var nextMovieId = 1;
+	var moviesReducer = exports.moviesReducer = function moviesReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'ADD_MOVIE':
+	      return [].concat(_toConsumableArray(state), [{
+	        id: nextMovieId++,
+	        movie: action.movie,
+	        genre: action.genre
+	      }]);
+
+	    case 'REMOVE_MOVIE':
+	      return state.filter(function (movie) {
+	        return movie.id !== action.id;
+	      });
+
+	    default:
+	      return state;
+	  }
+	};
+
+	var mapReducer = exports.mapReducer = function mapReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { isFetching: false, url: undefined };
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'START_LOCATION_FETCH':
+	      return {
+	        isFetching: true,
+	        url: undefined
+	      };
+	    case 'COMPLETE_LOCATION_FETCH':
+	      return {
+	        isFetching: false,
+	        url: action.url
+	      };
+	    default:
+	      return state;
+	  }
+	};
 
 /***/ }
 /******/ ]);
