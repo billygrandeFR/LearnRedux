@@ -117,8 +117,8 @@
 	  'xxx'
 	), document.getElementById('app'));
 
+	// require('./redux-todo-example.jsx');
 	__webpack_require__(246);
-	// require('./redux-example.jsx');
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ },
@@ -26994,25 +26994,64 @@
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 	var redux = __webpack_require__(247);
 
-	console.log('Starting redux example');
+	console.log('starting redux example');
 
 	var stateDefault = {
-	  searchText: '',
-	  showCompleted: false,
-	  todos: []
+	  name: 'Anonymous',
+	  hobbies: [],
+	  movies: []
 	};
+
+	var nextHobbyId = 1;
+	var nextMovieId = 1;
 
 	var reducer = function reducer() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : stateDefault;
 	  var action = arguments[1];
 
+	  // state = state || {name: 'Anonymous'};
+
 	  switch (action.type) {
-	    case 'CHANGE_SEARCH_TEXT':
+	    case 'CHANGE_NAME':
 	      return _extends({}, state, {
-	        searchText: action.searchText
+	        name: action.name
 	      });
+
+	    case 'ADD_HOBBY':
+	      return _extends({}, state, {
+	        hobbies: [].concat(_toConsumableArray(state.hobbies), [{
+	          id: nextHobbyId++,
+	          hobby: action.hobby
+	        }])
+	      });
+
+	    case 'REMOVE_HOBBY':
+	      return _extends({}, state, {
+	        hobbies: state.hobbies.filter(function (hobby) {
+	          return hobby.id !== action.id;
+	        })
+	      });
+
+	    case 'ADD_MOVIE':
+	      return _extends({}, state, {
+	        movies: [].concat(_toConsumableArray(state.movies), [{
+	          id: nextMovieId++,
+	          movie: action.movie,
+	          genre: action.genre
+	        }])
+	      });
+
+	    case 'REMOVE_MOVIE':
+	      return _extends({}, state, {
+	        movies: state.movies.filter(function (movie) {
+	          return movie.id !== action.id;
+	        })
+	      });
+
 	    default:
 	      return state;
 	  }
@@ -27022,15 +27061,57 @@
 	  return f;
 	}));
 
+	// subscribe to changes
+
+	// var unsubscribe =
 	store.subscribe(function () {
 	  var state = store.getState();
-	  console.log('Search text is: ', state.searchText);
+	  console.log('name is: ', state.name);
 	});
 
-	store.dispatch({ type: 'CHANGE_SEARCH_TEXT', searchText: 'Kevin' });
-	store.dispatch({ type: 'CHANGE_SEARCH_TEXT', searchText: 'Damian' });
-	store.dispatch({ type: 'CHANGE_SEARCH_TEXT', searchText: 'Timothy' });
-	store.dispatch({ type: 'CHANGE_SEARCH_TEXT', searchText: 'Danni' });
+	store.dispatch({
+	  type: 'CHANGE_NAME',
+	  name: 'Andrew'
+	});
+
+	store.dispatch({
+	  type: 'ADD_MOVIE',
+	  movie: 'Rambo',
+	  genre: 'Action'
+	});
+
+	store.dispatch({
+	  type: 'ADD_MOVIE',
+	  movie: 'Trump',
+	  genre: 'Thriller'
+	});
+
+	store.dispatch({
+	  type: 'ADD_HOBBY',
+	  hobby: 'Politics'
+	});
+
+	store.dispatch({
+	  type: 'ADD_HOBBY',
+	  hobby: 'Running'
+	});
+
+	// unsubscribe();
+
+	store.dispatch({
+	  type: 'CHANGE_NAME',
+	  name: 'Emily'
+	});
+
+	store.dispatch({
+	  type: 'REMOVE_HOBBY',
+	  id: 2
+	});
+
+	store.dispatch({
+	  type: 'REMOVE_MOVIE',
+	  id: 1
+	});
 
 /***/ },
 /* 247 */
