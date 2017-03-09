@@ -26992,8 +26992,6 @@
 
 	'use strict';
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	var redux = __webpack_require__(247);
@@ -27009,53 +27007,160 @@
 	var nextHobbyId = 1;
 	var nextMovieId = 1;
 
-	var reducer = function reducer() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : stateDefault;
-	  var action = arguments[1];
+	// var oldReducer = (state = stateDefault, action) => {
+	//   // state = state || {name: 'Anonymous'};
+	//
+	//     switch (action.type) {
+	//       case 'CHANGE_NAME':
+	//       return {
+	//         ...state,
+	//         name: action.name
+	//       };
+	//
+	//       case 'ADD_HOBBY':
+	//       return {
+	//         ...state,
+	//         hobbies: [
+	//           ...state.hobbies,
+	//           {
+	//             id: nextHobbyId++,
+	//             hobby: action.hobby
+	//           }
+	//         ]
+	//       };
+	//
+	//       case 'REMOVE_HOBBY':
+	//       return {
+	//         ...state,
+	//         hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
+	//       };
+	//
+	//       case 'ADD_MOVIE':
+	//       return {
+	//         ...state,
+	//         movies: [
+	//           ...state.movies,
+	//           {
+	//             id: nextMovieId++,
+	//             movie: action.movie,
+	//             genre: action.genre
+	//           }
+	//         ]
+	//       };
+	//
+	//       case 'REMOVE_MOVIE':
+	//       return {
+	//         ...state,
+	//         movies: state.movies.filter((movie) => movie.id !== action.id)
+	//       };
+	//
+	//       default: return state;
+	//     }
+	// };
+	// name reducer and action generators
+	// -----------------------------------------
 
-	  // state = state || {name: 'Anonymous'};
+	var nameReducer = function nameReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Anonymous';
+	  var action = arguments[1];
 
 	  switch (action.type) {
 	    case 'CHANGE_NAME':
-	      return _extends({}, state, {
-	        name: action.name
-	      });
+	      return action.name;
 
+	    default:
+	      return state;
+	  };
+	};
+
+	var changeName = function changeName(name) {
+	  return {
+	    type: 'CHANGE_NAME',
+	    name: name
+	  };
+	};
+	// hobbies reducer and action generators
+	// --------------------------------------
+
+	var hobbiesReducer = function hobbiesReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+
+	  switch (action.type) {
 	    case 'ADD_HOBBY':
-	      return _extends({}, state, {
-	        hobbies: [].concat(_toConsumableArray(state.hobbies), [{
-	          id: nextHobbyId++,
-	          hobby: action.hobby
-	        }])
-	      });
+	      return [].concat(_toConsumableArray(state), [{
+	        id: nextHobbyId++,
+	        hobby: action.hobby
+	      }]);
 
 	    case 'REMOVE_HOBBY':
-	      return _extends({}, state, {
-	        hobbies: state.hobbies.filter(function (hobby) {
-	          return hobby.id !== action.id;
-	        })
-	      });
-
-	    case 'ADD_MOVIE':
-	      return _extends({}, state, {
-	        movies: [].concat(_toConsumableArray(state.movies), [{
-	          id: nextMovieId++,
-	          movie: action.movie,
-	          genre: action.genre
-	        }])
-	      });
-
-	    case 'REMOVE_MOVIE':
-	      return _extends({}, state, {
-	        movies: state.movies.filter(function (movie) {
-	          return movie.id !== action.id;
-	        })
+	      return state.filter(function (hobby) {
+	        return hobby.id !== action.id;
 	      });
 
 	    default:
 	      return state;
 	  }
 	};
+	// action generators
+	var addHobby = function addHobby(hobby) {
+	  return {
+	    type: 'ADD_HOBBY',
+	    hobby: hobby
+	  };
+	};
+	var removeHobby = function removeHobby(id) {
+	  return {
+	    type: 'REMOVE_HOBBY',
+	    id: id
+	  };
+	};
+	// movies reducer and action generators
+	// ----------------------------------------------
+
+	var moviesReducer = function moviesReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'ADD_MOVIE':
+	      return [].concat(_toConsumableArray(state), [{
+	        id: nextMovieId++,
+	        movie: action.movie,
+	        genre: action.genre
+	      }]);
+
+	    case 'REMOVE_MOVIE':
+	      return state.filter(function (movie) {
+	        return movie.id !== action.id;
+	      });
+
+	    default:
+	      return state;
+	  }
+	};
+
+	var addMovie = function addMovie(movie, genre) {
+	  return {
+	    type: 'ADD_MOVIE',
+	    movie: movie,
+	    genre: genre
+	  };
+	};
+	var removeMovie = function removeMovie(id) {
+	  return {
+	    type: 'REMOVE_MOVIE',
+	    id: id
+	  };
+	};
+	// Combine
+
+	var reducer = redux.combineReducers({
+	  name: nameReducer,
+	  hobbies: hobbiesReducer,
+	  movies: moviesReducer
+
+	});
 
 	var store = redux.createStore(reducer, redux.compose(window.devToolsExtension ? window.devToolsExtension() : function (f) {
 	  return f;
@@ -27069,10 +27174,7 @@
 	  console.log('name is: ', state.name);
 	});
 
-	store.dispatch({
-	  type: 'CHANGE_NAME',
-	  name: 'Andrew'
-	});
+	store.dispatch(changeName('David'));
 
 	store.dispatch({
 	  type: 'ADD_MOVIE',
@@ -27112,6 +27214,12 @@
 	  type: 'REMOVE_MOVIE',
 	  id: 1
 	});
+
+	store.dispatch(addHobby('Sex'));
+	store.dispatch(addHobby('Shag'));
+	store.dispatch(removeHobby(4));
+	store.dispatch(addMovie('Brains', 'Appeal'));
+	store.dispatch(removeMovie(2));
 
 /***/ },
 /* 247 */

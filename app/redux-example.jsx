@@ -11,56 +11,147 @@ var stateDefault = {
 var nextHobbyId = 1;
 var nextMovieId = 1;
 
-var reducer = (state = stateDefault, action) => {
-  // state = state || {name: 'Anonymous'};
+// var oldReducer = (state = stateDefault, action) => {
+//   // state = state || {name: 'Anonymous'};
+//
+//     switch (action.type) {
+//       case 'CHANGE_NAME':
+//       return {
+//         ...state,
+//         name: action.name
+//       };
+//
+//       case 'ADD_HOBBY':
+//       return {
+//         ...state,
+//         hobbies: [
+//           ...state.hobbies,
+//           {
+//             id: nextHobbyId++,
+//             hobby: action.hobby
+//           }
+//         ]
+//       };
+//
+//       case 'REMOVE_HOBBY':
+//       return {
+//         ...state,
+//         hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
+//       };
+//
+//       case 'ADD_MOVIE':
+//       return {
+//         ...state,
+//         movies: [
+//           ...state.movies,
+//           {
+//             id: nextMovieId++,
+//             movie: action.movie,
+//             genre: action.genre
+//           }
+//         ]
+//       };
+//
+//       case 'REMOVE_MOVIE':
+//       return {
+//         ...state,
+//         movies: state.movies.filter((movie) => movie.id !== action.id)
+//       };
+//
+//       default: return state;
+//     }
+// };
+// name reducer and action generators
+// -----------------------------------------
 
-    switch (action.type) {
-      case 'CHANGE_NAME':
-      return {
-        ...state,
-        name: action.name
-      };
+var nameReducer = (state = 'Anonymous', action) => {
+  switch(action.type) {
+    case 'CHANGE_NAME':
+    return action.name;
 
-      case 'ADD_HOBBY':
-      return {
-        ...state,
-        hobbies: [
-          ...state.hobbies,
-          {
-            id: nextHobbyId++,
-            hobby: action.hobby
-          }
-        ]
-      };
-
-      case 'REMOVE_HOBBY':
-      return {
-        ...state,
-        hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
-      };
-
-      case 'ADD_MOVIE':
-      return {
-        ...state,
-        movies: [
-          ...state.movies,
-          {
-            id: nextMovieId++,
-            movie: action.movie,
-            genre: action.genre
-          }
-        ]
-      };
-
-      case 'REMOVE_MOVIE':
-      return {
-        ...state,
-        movies: state.movies.filter((movie) => movie.id !== action.id)
-      };
-
-      default: return state;
-    }
+    default: return state;
+  };
 };
+
+var changeName = (name) => {
+  return {
+    type: 'CHANGE_NAME',
+    name
+  }
+};
+// hobbies reducer and action generators
+// --------------------------------------
+
+var hobbiesReducer = (state = [], action) => {
+  switch(action.type) {
+    case 'ADD_HOBBY':
+    return [...state,
+    {
+      id: nextHobbyId++,
+      hobby: action.hobby
+    }
+  ];
+
+  case 'REMOVE_HOBBY':
+  return state.filter((hobby) => hobby.id !== action.id)
+
+  default: return state;
+  }
+};
+// action generators
+var addHobby = (hobby) => {
+  return {
+    type: 'ADD_HOBBY',
+    hobby
+  }
+};
+var removeHobby = (id) => {
+  return {
+    type: 'REMOVE_HOBBY',
+    id
+  }
+};
+// movies reducer and action generators
+// ----------------------------------------------
+
+var moviesReducer = (state = [], action) => {
+  switch(action.type) {
+    case 'ADD_MOVIE':
+    return [...state,
+    {
+      id: nextMovieId++,
+      movie: action.movie,
+      genre: action.genre
+    }];
+
+    case 'REMOVE_MOVIE':
+    return state.filter((movie) => movie.id !== action.id )
+
+    default: return state;
+  }
+};
+
+var addMovie = (movie, genre) => {
+  return {
+    type: 'ADD_MOVIE',
+    movie,
+    genre
+  }
+};
+var removeMovie = (id) => {
+  return {
+    type: 'REMOVE_MOVIE',
+    id
+  }
+};
+// Combine
+
+var reducer = redux.combineReducers({
+  name: nameReducer,
+  hobbies: hobbiesReducer,
+  movies: moviesReducer
+
+})
 
 var store = redux.createStore(reducer, redux.compose(
   window.devToolsExtension ? window.devToolsExtension() : f => f
@@ -76,10 +167,7 @@ store.subscribe (() => {
 
 
 
-store.dispatch({
-  type: 'CHANGE_NAME',
-  name: 'Andrew'
-});
+store.dispatch(changeName('David'));
 
 store.dispatch({
   type: 'ADD_MOVIE',
@@ -119,3 +207,9 @@ store.dispatch({
   type: 'REMOVE_MOVIE',
   id: 1
 });
+
+store.dispatch(addHobby('Sex'));
+store.dispatch(addHobby('Shag'));
+store.dispatch(removeHobby(4));
+store.dispatch(addMovie('Brains', 'Appeal'));
+store.dispatch(removeMovie(2));
